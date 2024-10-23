@@ -50,24 +50,22 @@ func getUsersDirect(c *gin.Context) {
 	order := c.Query("order")
 
 	var query string
-	var args []interface{} // Список аргументов для запроса
+	var args []interface{}
 
-	// Формируем запрос
 	if ageFilter != "" {
 		query = "SELECT id, name, age FROM users WHERE age = $1"
-		args = append(args, ageFilter) // Добавляем параметр ageFilter
+		args = append(args, ageFilter)
 	} else {
 		query = "SELECT id, name, age FROM users"
 	}
 
-	// Добавляем сортировку
+	// Sorting
 	if order == "asc" {
 		query += " ORDER BY name ASC"
 	} else if order == "desc" {
 		query += " ORDER BY name DESC"
 	}
 
-	// Выполняем запрос с правильным количеством параметров
 	rows, err := db.Query(query, args...)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -244,18 +242,18 @@ func main() {
 	router := gin.Default()
 
 	// Direct SQL routes
-	router.GET("/users/direct", getUsersDirect)
+	/*router.GET("/users/direct", getUsersDirect)
 	router.POST("/users/direct", createUserDirect)
 	router.PUT("/users/direct/:id", updateUserDirect)
-	router.DELETE("/users/direct/:id", deleteUserDirect)
+	router.DELETE("/users/direct/:id", deleteUserDirect)*/
 
 	// GORM routes
-	/*router.GET("/users/gorm", getUsersGORM)
+	router.GET("/users/gorm", getUsersGORM)
 	router.POST("/users/gorm", createUserGORM)
 	router.PUT("/users/gorm/:id", updateUserGORM)
 	router.DELETE("/users/gorm/:id", deleteUserGORM)
 
-	router.GET("/users/gorm", getUsersGORM_p)*/
+	router.GET("/users/gorm", getUsersGORM_p)
 
 	router.Run(":8080") // Start the server on port 8080
 }
